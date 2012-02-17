@@ -1,0 +1,5 @@
+Content-Length: 2323
+Other-Header: this is a more lengthy header
+And-Another-Header    :     text/javascript; utf-8
+
+{ here goes the body }
