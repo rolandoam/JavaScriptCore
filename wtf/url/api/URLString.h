@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Apple Inc. All rights reserved.
+ * Copyright (C) 2010 Google, Inc. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -20,34 +20,40 @@
  * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef BumpBlock_h
-#define BumpBlock_h
+#ifndef URLString_h
+#define URLString_h
 
-#include "HeapBlock.h"
+#if USE(WTFURL)
 
-namespace JSC {
+#include "WTFString.h"
 
-class BumpSpace;
+namespace WTF {
 
-class BumpBlock : public HeapBlock {
-    friend class BumpSpace;
+// URLString represents a string that's a canonicalized URL.
+class URLString {
 public:
-    BumpBlock(PageAllocationAligned& allocation)
-        : HeapBlock(allocation)
-        , m_offset(m_payload)
-        , m_isPinned(false)
+    URLString() { }
+
+    const String& string() const { return m_string;}
+
+private:
+    friend class ParsedURL;
+
+    // URLString can only be constructed by a ParsedURL.
+    explicit URLString(const String& string)
+        : m_string(string)
     {
     }
 
-private:
-    void* m_offset;
-    uintptr_t m_isPinned;
-    char m_payload[1];
+    String m_string;
 };
 
-} // namespace JSC
+}
+
+#endif // USE(WTFURL)
 
 #endif
+

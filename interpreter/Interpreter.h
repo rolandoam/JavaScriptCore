@@ -79,11 +79,21 @@ namespace JSC {
         JSGlobalData& globalData;
         CallFrame* oldCallFrame;
     };
+    
+    class NativeCallFrameTracer {
+    public:
+        ALWAYS_INLINE NativeCallFrameTracer(JSGlobalData* global, CallFrame* callFrame)
+        {
+            ASSERT(global);
+            ASSERT(callFrame);
+            global->topCallFrame = callFrame;
+        }
+    };
 
-#if PLATFORM(IOS)
     // We use a smaller reentrancy limit on iPhone because of the high amount of
     // stack space required on the web thread.
-    enum { MaxLargeThreadReentryDepth = 93, MaxSmallThreadReentryDepth = 16 };
+#if PLATFORM(IOS)
+    enum { MaxLargeThreadReentryDepth = 64, MaxSmallThreadReentryDepth = 16 };
 #else
     enum { MaxLargeThreadReentryDepth = 256, MaxSmallThreadReentryDepth = 16 };
 #endif // PLATFORM(IOS)
@@ -102,7 +112,7 @@ namespace JSC {
         Opcode getOpcode(OpcodeID id)
         {
             ASSERT(m_initialized);
-#if ENABLE(COMPUTED_GOTO_INTERPRETER)
+#if ENABLE(COMPUTED_GOTO_CLASSIC_INTERPRETER)
             return m_opcodeTable[id];
 #else
             return id;
@@ -112,7 +122,7 @@ namespace JSC {
         OpcodeID getOpcodeID(Opcode opcode)
         {
             ASSERT(m_initialized);
-#if ENABLE(COMPUTED_GOTO_INTERPRETER)
+#if ENABLE(COMPUTED_GOTO_CLASSIC_INTERPRETER)
             ASSERT(isOpcode(opcode));
             if (!m_enabled)
                 return static_cast<OpcodeID>(bitwise_cast<uintptr_t>(opcode));
@@ -131,8 +141,8 @@ namespace JSC {
         JSValue execute(EvalExecutable*, CallFrame*, JSValue thisValue, ScopeChainNode*);
         JSValue execute(EvalExecutable*, CallFrame*, JSValue thisValue, ScopeChainNode*, int globalRegisterOffset);
 
-        JSValue retrieveArguments(CallFrame*, JSFunction*) const;
-        JS_EXPORT_PRIVATE JSValue retrieveCaller(CallFrame*, JSFunction*) const;
+        JSValue retrieveArgumentsFromVMCode(CallFrame*, JSFunction*) const;
+        JSValue retrieveCallerFromVMCode(CallFrame*, JSFunction*) const;
         JS_EXPORT_PRIVATE void retrieveLastCaller(CallFrame*, int& lineNumber, intptr_t& sourceID, UString& sourceURL, JSValue& function) const;
         
         void getArgumentsData(CallFrame*, JSFunction*&, ptrdiff_t& firstParameterIndex, Register*& argv, int& argc);
@@ -152,7 +162,7 @@ namespace JSC {
         void endRepeatCall(CallFrameClosure&);
         JSValue execute(CallFrameClosure&);
 
-#if ENABLE(INTERPRETER)
+#if ENABLE(CLASSIC_INTERPRETER)
         NEVER_INLINE bool resolve(CallFrame*, Instruction*, JSValue& exceptionValue);
         NEVER_INLINE bool resolveSkip(CallFrame*, Instruction*, JSValue& exceptionValue);
         NEVER_INLINE bool resolveGlobal(CallFrame*, Instruction*, JSValue& exceptionValue);
@@ -166,13 +176,13 @@ namespace JSC {
         void uncacheGetByID(CodeBlock*, Instruction* vPC);
         void tryCachePutByID(CallFrame*, CodeBlock*, Instruction*, JSValue baseValue, const PutPropertySlot&);
         void uncachePutByID(CodeBlock*, Instruction* vPC);        
-#endif // ENABLE(INTERPRETER)
+#endif // ENABLE(CLASSIC_INTERPRETER)
 
         NEVER_INLINE bool unwindCallFrame(CallFrame*&, JSValue, unsigned& bytecodeOffset, CodeBlock*&);
 
         static ALWAYS_INLINE CallFrame* slideRegisterWindowForCall(CodeBlock*, RegisterFile*, CallFrame*, size_t registerOffset, int argc);
 
-        static CallFrame* findFunctionCallFrame(CallFrame*, JSFunction*);
+        static CallFrame* findFunctionCallFrameFromVMCode(CallFrame*, JSFunction*);
 
         JSValue privateExecute(ExecutionFlag, RegisterFile*, CallFrame*);
 
@@ -189,7 +199,7 @@ namespace JSC {
 
         RegisterFile m_registerFile;
         
-#if ENABLE(COMPUTED_GOTO_INTERPRETER)
+#if ENABLE(COMPUTED_GOTO_CLASSIC_INTERPRETER)
         Opcode m_opcodeTable[numOpcodeIDs]; // Maps OpcodeID => Opcode for compiling
         HashMap<Opcode, OpcodeID> m_opcodeIDTable; // Maps Opcode => OpcodeID for decompiling
 #endif

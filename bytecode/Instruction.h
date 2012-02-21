@@ -48,6 +48,7 @@ namespace JSC {
     class JSCell;
     class Structure;
     class StructureChain;
+    struct ValueProfile;
 
 #if ENABLE(JIT)
     typedef MacroAssemblerCodeRef PolymorphicAccessStructureListStubRoutineType;
@@ -147,7 +148,7 @@ namespace JSC {
     struct Instruction {
         Instruction(Opcode opcode)
         {
-#if !ENABLE(COMPUTED_GOTO_INTERPRETER)
+#if !ENABLE(COMPUTED_GOTO_CLASSIC_INTERPRETER)
             // We have to initialize one of the pointer members to ensure that
             // the entire struct is initialized, when opcode is not a pointer.
             u.jsCell.clear();
@@ -180,6 +181,8 @@ namespace JSC {
         }
 
         Instruction(PropertySlot::GetValueFunc getterFunc) { u.getterFunc = getterFunc; }
+        
+        Instruction(ValueProfile* profile) { u.profile = profile; }
 
         union {
             Opcode opcode;
@@ -188,6 +191,7 @@ namespace JSC {
             WriteBarrierBase<StructureChain> structureChain;
             WriteBarrierBase<JSCell> jsCell;
             PropertySlot::GetValueFunc getterFunc;
+            ValueProfile* profile;
         } u;
         
     private:

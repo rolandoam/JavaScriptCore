@@ -31,8 +31,6 @@
 {
   'includes': [
     '../../WebKit/chromium/WinPrecompile.gypi',
-    # FIXME: Sense whether upstream or downstream build, and
-    # include the right features.gypi
     '../../WebKit/chromium/features.gypi',
     '../JavaScriptCore.gypi',
   ],
@@ -174,6 +172,7 @@
             ['include', 'Thread(ing|Specific)Win\\.cpp$'],
             ['exclude', 'OSAllocatorPosix\\.cpp$'],
             ['include', 'OSAllocatorWin\\.cpp$'],
+            ['include', 'win/OwnPtrWin\\.cpp$'],
           ],
           'include_dirs!': [
             '<(SHARED_INTERMEDIATE_DIR)/webkit',
@@ -198,11 +197,6 @@
       'type': 'static_library',
       'dependencies': [
         'wtf',
-      ],
-      'conditions': [
-        ['OS=="win"', {
-          'dependencies': ['<(chromium_src_dir)/build/win/system.gyp:cygwin'],
-        }],
       ],
       'variables': { 'optimize': 'max' },
       'actions': [

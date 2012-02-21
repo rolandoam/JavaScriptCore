@@ -149,7 +149,7 @@ EncodedJSValue JSC_HOST_CALL objectConstructorGetOwnPropertyDescriptor(ExecState
 {
     if (!exec->argument(0).isObject())
         return throwVMError(exec, createTypeError(exec, "Requested property descriptor of a value that is not an object."));
-    UString propertyName = exec->argument(1).toString(exec);
+    UString propertyName = exec->argument(1).toString(exec)->value(exec);
     if (exec->hadException())
         return JSValue::encode(jsNull());
     JSObject* object = asObject(exec->argument(0));
@@ -292,7 +292,7 @@ EncodedJSValue JSC_HOST_CALL objectConstructorDefineProperty(ExecState* exec)
     if (!exec->argument(0).isObject())
         return throwVMError(exec, createTypeError(exec, "Properties can only be defined on Objects."));
     JSObject* O = asObject(exec->argument(0));
-    UString propertyName = exec->argument(1).toString(exec);
+    UString propertyName = exec->argument(1).toString(exec)->value(exec);
     if (exec->hadException())
         return JSValue::encode(jsNull());
     PropertyDescriptor descriptor;
@@ -342,9 +342,7 @@ EncodedJSValue JSC_HOST_CALL objectConstructorDefineProperties(ExecState* exec)
 {
     if (!exec->argument(0).isObject())
         return throwVMError(exec, createTypeError(exec, "Properties can only be defined on Objects."));
-    if (!exec->argument(1).isObject())
-        return throwVMError(exec, createTypeError(exec, "Property descriptor list must be an Object."));
-    return JSValue::encode(defineProperties(exec, asObject(exec->argument(0)), asObject(exec->argument(1))));
+    return JSValue::encode(defineProperties(exec, asObject(exec->argument(0)), exec->argument(1).toObject(exec)));
 }
 
 EncodedJSValue JSC_HOST_CALL objectConstructorCreate(ExecState* exec)

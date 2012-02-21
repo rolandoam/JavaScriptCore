@@ -162,8 +162,6 @@ JSGlobalData::JSGlobalData(GlobalDataType globalDataType, ThreadStackType thread
 #endif
 {
     interpreter = new Interpreter;
-    if (globalDataType == Default)
-        m_stack = wtfThreadData().stack();
 
     // Need to be careful to keep everything consistent here
     IdentifierTable* existingEntryIdentifierTable = wtfThreadData().setCurrentIdentifierTable(identifierTable);
@@ -191,7 +189,7 @@ JSGlobalData::JSGlobalData(GlobalDataType globalDataType, ThreadStackType thread
 
     wtfThreadData().setCurrentIdentifierTable(existingEntryIdentifierTable);
 
-#if ENABLE(JIT) && ENABLE(INTERPRETER)
+#if ENABLE(JIT) && ENABLE(CLASSIC_INTERPRETER)
 #if USE(CF)
     CFStringRef canUseJITKey = CFStringCreateWithCString(0 , "JavaScriptCoreUseJIT", kCFStringEncodingMacRoman);
     CFBooleanRef canUseJIT = (CFBooleanRef)CFPreferencesCopyAppValue(canUseJITKey, kCFPreferencesCurrentApplication);
@@ -211,7 +209,7 @@ JSGlobalData::JSGlobalData(GlobalDataType globalDataType, ThreadStackType thread
 #endif
 #endif
 #if ENABLE(JIT)
-#if ENABLE(INTERPRETER)
+#if ENABLE(CLASSIC_INTERPRETER)
     if (m_canUseJIT)
         m_canUseJIT = executableAllocator.isValid();
 #endif
@@ -385,7 +383,7 @@ static ThunkGenerator thunkGeneratorForIntrinsic(Intrinsic intrinsic)
 
 NativeExecutable* JSGlobalData::getHostFunction(NativeFunction function, NativeFunction constructor)
 {
-#if ENABLE(INTERPRETER)
+#if ENABLE(CLASSIC_INTERPRETER)
     if (!canUseJIT())
         return NativeExecutable::create(*this, function, constructor);
 #endif
@@ -504,17 +502,17 @@ void JSGlobalData::dumpRegExpTrace()
     RTTraceList::iterator iter = ++m_rtTraceList->begin();
     
     if (iter != m_rtTraceList->end()) {
-        printf("\nRegExp Tracing\n");
-        printf("                                                            match()    matches\n");
-        printf("Regular Expression                          JIT Address      calls      found\n");
-        printf("----------------------------------------+----------------+----------+----------\n");
+        dataLog("\nRegExp Tracing\n");
+        dataLog("                                                            match()    matches\n");
+        dataLog("Regular Expression                          JIT Address      calls      found\n");
+        dataLog("----------------------------------------+----------------+----------+----------\n");
     
         unsigned reCount = 0;
     
         for (; iter != m_rtTraceList->end(); ++iter, ++reCount)
             (*iter)->printTraceData();
 
-        printf("%d Regular Expressions\n", reCount);
+        dataLog("%d Regular Expressions\n", reCount);
     }
     
     m_rtTraceList->clear();

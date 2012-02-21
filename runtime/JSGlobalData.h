@@ -217,18 +217,11 @@ namespace JSC {
 
 #if !ENABLE(JIT)
         bool canUseJIT() { return false; } // interpreter only
-#elif !ENABLE(INTERPRETER)
+#elif !ENABLE(CLASSIC_INTERPRETER)
         bool canUseJIT() { return true; } // jit only
 #else
         bool canUseJIT() { return m_canUseJIT; }
 #endif
-
-        const StackBounds& stack()
-        {
-            return (globalDataType == Default)
-                ? m_stack
-                : wtfThreadData().stack();
-        }
 
         OwnPtr<ParserArena> parserArena;
         OwnPtr<Keywords> keywords;
@@ -356,10 +349,9 @@ namespace JSC {
         JSGlobalData(GlobalDataType, ThreadStackType, HeapSize);
         static JSGlobalData*& sharedInstanceInternal();
         void createNativeThunk();
-#if ENABLE(JIT) && ENABLE(INTERPRETER)
+#if ENABLE(JIT) && ENABLE(CLASSIC_INTERPRETER)
         bool m_canUseJIT;
 #endif
-        StackBounds m_stack;
 #if ENABLE(GC_VALIDATION)
         bool m_isInitializingObject;
 #endif

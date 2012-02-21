@@ -22,10 +22,10 @@
 #ifndef Heap_h
 #define Heap_h
 
-#include "AllocationSpace.h"
 #include "DFGCodeBlocks.h"
 #include "HandleHeap.h"
 #include "HandleStack.h"
+#include "MarkedAllocator.h"
 #include "MarkedBlock.h"
 #include "MarkedBlockSet.h"
 #include "MarkedSpace.h"
@@ -40,7 +40,7 @@
 
 namespace JSC {
 
-    class BumpSpace;
+    class CopiedSpace;
     class CodeBlock;
     class GCActivityCallback;
     class GlobalCodeBlock;
@@ -86,7 +86,7 @@ namespace JSC {
         JS_EXPORT_PRIVATE void destroy(); // JSGlobalData must call destroy() before ~Heap().
 
         JSGlobalData* globalData() const { return m_globalData; }
-        AllocationSpace& objectSpace() { return m_objectSpace; }
+        MarkedSpace& objectSpace() { return m_objectSpace; }
         MachineThreads& machineThreads() { return m_machineThreads; }
 
         JS_EXPORT_PRIVATE GCActivityCallback* activityCallback();
@@ -95,8 +95,8 @@ namespace JSC {
         // true if an allocation or collection is in progress
         inline bool isBusy();
         
-        MarkedSpace::SizeClass& sizeClassForObject(size_t bytes) { return m_objectSpace.sizeClassFor(bytes); }
-        void* allocate(size_t);
+        MarkedAllocator& allocatorForObjectWithoutDestructor(size_t bytes) { return m_objectSpace.allocatorFor(bytes); }
+        MarkedAllocator& allocatorForObjectWithDestructor(size_t bytes) { return m_objectSpace.destructorAllocatorFor(bytes); }
         CheckedBoolean tryAllocateStorage(size_t, void**);
         CheckedBoolean tryReallocateStorage(void**, size_t, size_t);
 
@@ -136,11 +136,16 @@ namespace JSC {
         void getConservativeRegisterRoots(HashSet<JSCell*>& roots);
 
     private:
+        friend class MarkedSpace;
+        friend class MarkedAllocator;
         friend class MarkedBlock;
-        friend class AllocationSpace;
-        friend class BumpSpace;
+        friend class CopiedSpace;
         friend class SlotVisitor;
         friend class CodeBlock;
+        template<typename T> friend void* allocateCell(Heap&);
+
+        void* allocateWithDestructor(size_t);
+        void* allocateWithoutDestructor(size_t);
 
         size_t waterMark();
         size_t highWaterMark();
@@ -161,7 +166,7 @@ namespace JSC {
         // conservative marking, eager sweeping, or iterating the cells in a MarkedBlock.)
         void canonicalizeCellLivenessData();
 
-        void resetAllocator();
+        void resetAllocators();
         void freeBlocks(MarkedBlock*);
 
         void clearMarks();
@@ -191,8 +196,8 @@ namespace JSC {
         size_t m_highWaterMark;
         
         OperationInProgress m_operationInProgress;
-        AllocationSpace m_objectSpace;
-        BumpSpace m_storageSpace;
+        MarkedSpace m_objectSpace;
+        CopiedSpace m_storageSpace;
 
         DoublyLinkedList<HeapBlock> m_freeBlocks;
         size_t m_numberOfFreeBlocks;
@@ -333,10 +338,16 @@ namespace JSC {
         return forEachProtectedCell(functor);
     }
 
-    inline void* Heap::allocate(size_t bytes)
+    inline void* Heap::allocateWithDestructor(size_t bytes)
     {
         ASSERT(isValidAllocation(bytes));
-        return m_objectSpace.allocate(bytes);
+        return m_objectSpace.allocateWithDestructor(bytes);
+    }
+    
+    inline void* Heap::allocateWithoutDestructor(size_t bytes)
+    {
+        ASSERT(isValidAllocation(bytes));
+        return m_objectSpace.allocateWithoutDestructor(bytes);
     }
     
     inline CheckedBoolean Heap::tryAllocateStorage(size_t bytes, void** outPtr)

@@ -330,17 +330,11 @@ void RegExp::compileIfNecessary(JSGlobalData& globalData, Yarr::YarrCharSize cha
     compile(&globalData, charSize);
 }
 
-int RegExp::match(JSGlobalData& globalData, const UString& s, int startOffset, Vector<int, 32>* ovector)
+int RegExp::match(JSGlobalData& globalData, const UString& s, unsigned startOffset, Vector<int, 32>* ovector)
 {
-    if (startOffset < 0)
-        startOffset = 0;
-
 #if ENABLE(REGEXP_TRACING)
     m_rtMatchCallCount++;
 #endif
-
-    if (static_cast<unsigned>(startOffset) > s.length() || s.isNull())
-        return -1;
 
     ASSERT(m_state != ParseError);
     compileIfNecessary(globalData, s.is8Bit() ? Yarr::Char8 : Yarr::Char16);
@@ -355,13 +349,7 @@ int RegExp::match(JSGlobalData& globalData, const UString& s, int startOffset, V
         nonReturnedOvector.resize(offsetVectorSize);
         offsetVector = nonReturnedOvector.data();
     }
-
     ASSERT(offsetVector);
-    // Initialize offsetVector with the return value (index 0) and the 
-    // first subpattern start indicies (even index values) set to -1.
-    // No need to init the subpattern end indicies.
-    for (unsigned j = 0, i = 0; i < m_numSubpatterns + 1; j += 2, i++)            
-        offsetVector[j] = -1;
 
     int result;
 #if ENABLE(YARR_JIT)
@@ -425,24 +413,24 @@ void RegExp::matchCompareWithInterpreter(const UString& s, int startOffset, int*
             differences++;
 
     if (differences) {
-        fprintf(stderr, "RegExp Discrepency for /%s/\n    string input ", pattern().utf8().data());
+        dataLog("RegExp Discrepency for /%s/\n    string input ", pattern().utf8().data());
         unsigned segmentLen = s.length() - static_cast<unsigned>(startOffset);
 
-        fprintf(stderr, (segmentLen < 150) ? "\"%s\"\n" : "\"%148s...\"\n", s.utf8().data() + startOffset);
+        dataLog((segmentLen < 150) ? "\"%s\"\n" : "\"%148s...\"\n", s.utf8().data() + startOffset);
 
         if (jitResult != interpreterResult) {
-            fprintf(stderr, "    JIT result = %d, blah interpreted result = %d\n", jitResult, interpreterResult);
+            dataLog("    JIT result = %d, blah interpreted result = %d\n", jitResult, interpreterResult);
             differences--;
         } else {
-            fprintf(stderr, "    Correct result = %d\n", jitResult);
+            dataLog("    Correct result = %d\n", jitResult);
         }
 
         if (differences) {
             for (unsigned j = 2, i = 0; i < m_numSubpatterns; j +=2, i++) {
                 if (offsetVector[j] != interpreterOffsetVector[j])
-                    fprintf(stderr, "    JIT offset[%d] = %d, interpreted offset[%d] = %d\n", j, offsetVector[j], j, interpreterOffsetVector[j]);
+                    dataLog("    JIT offset[%d] = %d, interpreted offset[%d] = %d\n", j, offsetVector[j], j, interpreterOffsetVector[j]);
                 if ((offsetVector[j] >= 0) && (offsetVector[j+1] != interpreterOffsetVector[j+1]))
-                    fprintf(stderr, "    JIT offset[%d] = %d, interpreted offset[%d] = %d\n", j+1, offsetVector[j+1], j+1, interpreterOffsetVector[j+1]);
+                    dataLog("    JIT offset[%d] = %d, interpreted offset[%d] = %d\n", j+1, offsetVector[j+1], j+1, interpreterOffsetVector[j+1]);
             }
         }
     }

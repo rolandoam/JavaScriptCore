@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Apple Inc. All rights reserved.
+ * Copyright (C) 2010 Google, Inc. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -20,30 +20,47 @@
  * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "config.h"
-#include "BumpSpace.h"
+#ifndef ParsedURL_h
+#define ParsedURL_h
 
-#include "BumpSpaceInlineMethods.h"
+#if USE(WTFURL)
 
-namespace JSC {
+#include "URLSegments.h"
+#include "URLString.h"
 
-CheckedBoolean BumpSpace::tryAllocateSlowCase(size_t bytes, void** outPtr)
-{
-    if (isOversize(bytes))
-        return tryAllocateOversize(bytes, outPtr);
-    
-    m_totalMemoryUtilized += static_cast<size_t>(static_cast<char*>(m_currentBlock->m_offset) - m_currentBlock->m_payload);
-    if (!addNewBlock()) {
-        *outPtr = 0;
-        return false;
-    }
-    m_toSpaceFilter.add(reinterpret_cast<Bits>(m_currentBlock));
-    m_toSpaceSet.add(m_currentBlock);
-    *outPtr = allocateFromBlock(m_currentBlock, bytes);
-    return true;
+namespace WTF {
+
+class URLComponent;
+
+class ParsedURL {
+public:
+    explicit ParsedURL(const URLString&);
+
+    // FIXME: Add a method for parsing non-canonicalized URLs.
+
+    String scheme() const;
+    String username() const;
+    String password() const;
+    String host() const;
+    String port() const;
+    String path() const;
+    String query() const;
+    String fragment() const;
+
+    URLString spec() { return m_spec; }
+
+private:
+    inline String segment(const URLComponent&) const;
+
+    URLString m_spec;
+    URLSegments m_segments;
+};
+
 }
 
-} // namespace JSC
+#endif // USE(WTFURL)
+
+#endif

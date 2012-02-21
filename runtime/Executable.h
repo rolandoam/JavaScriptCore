@@ -77,7 +77,9 @@ namespace JSC {
     public:
         typedef JSCell Base;
 
+#if ENABLE(JIT)
         static void destroy(JSCell*);
+#endif
 
         bool isHostFunction() const
         {
@@ -197,7 +199,7 @@ namespace JSC {
         }
 #endif
 
-#if ENABLE(INTERPRETER)
+#if ENABLE(CLASSIC_INTERPRETER)
         static NativeExecutable* create(JSGlobalData& globalData, NativeFunction function, NativeFunction constructor)
         {
             ASSERT(!globalData.canUseJIT());
@@ -208,7 +210,9 @@ namespace JSC {
         }
 #endif
 
+#if ENABLE(JIT)
         static void destroy(JSCell*);
+#endif
 
         NativeFunction function() { return m_function; }
         NativeFunction constructor() { return m_constructor; }
@@ -233,7 +237,7 @@ namespace JSC {
         }
 #endif
 
-#if ENABLE(INTERPRETER)
+#if ENABLE(CLASSIC_INTERPRETER)
         void finishCreation(JSGlobalData& globalData)
         {
             ASSERT(!globalData.canUseJIT());
@@ -276,7 +280,9 @@ namespace JSC {
         {
         }
 
+#if ENABLE(JIT)
         static void destroy(JSCell*);
+#endif
 
         const SourceCode& source() { return m_source; }
         intptr_t sourceID() const { return m_source.provider()->asID(); }
@@ -456,17 +462,17 @@ namespace JSC {
     public:
         typedef ScriptExecutable Base;
 
-        static FunctionExecutable* create(ExecState* exec, const Identifier& name, const SourceCode& source, bool forceUsesArguments, FunctionParameters* parameters, bool isInStrictContext, int firstLine, int lastLine)
+        static FunctionExecutable* create(ExecState* exec, const Identifier& name, const Identifier& inferredName, const SourceCode& source, bool forceUsesArguments, FunctionParameters* parameters, bool isInStrictContext, int firstLine, int lastLine)
         {
-            FunctionExecutable* executable = new (NotNull, allocateCell<FunctionExecutable>(*exec->heap())) FunctionExecutable(exec, name, source, forceUsesArguments, parameters, isInStrictContext);
+            FunctionExecutable* executable = new (NotNull, allocateCell<FunctionExecutable>(*exec->heap())) FunctionExecutable(exec, name, inferredName, source, forceUsesArguments, parameters, isInStrictContext);
             executable->finishCreation(exec->globalData(), name, firstLine, lastLine);
             exec->globalData().heap.addFinalizer(executable, &finalize);
             return executable;
         }
 
-        static FunctionExecutable* create(JSGlobalData& globalData, const Identifier& name, const SourceCode& source, bool forceUsesArguments, FunctionParameters* parameters, bool isInStrictContext, int firstLine, int lastLine)
+        static FunctionExecutable* create(JSGlobalData& globalData, const Identifier& name, const Identifier& inferredName, const SourceCode& source, bool forceUsesArguments, FunctionParameters* parameters, bool isInStrictContext, int firstLine, int lastLine)
         {
-            FunctionExecutable* executable = new (NotNull, allocateCell<FunctionExecutable>(globalData.heap)) FunctionExecutable(globalData, name, source, forceUsesArguments, parameters, isInStrictContext);
+            FunctionExecutable* executable = new (NotNull, allocateCell<FunctionExecutable>(globalData.heap)) FunctionExecutable(globalData, name, inferredName, source, forceUsesArguments, parameters, isInStrictContext);
             executable->finishCreation(globalData, name, firstLine, lastLine);
             globalData.heap.addFinalizer(executable, &finalize);
             return executable;
@@ -608,6 +614,7 @@ namespace JSC {
         }
         
         const Identifier& name() { return m_name; }
+        const Identifier& inferredName() { return m_inferredName; }
         JSString* nameValue() const { return m_nameValue.get(); }
         size_t parameterCount() const { return m_parameters->size(); } // Excluding 'this'!
         unsigned capturedVariableCount() const { return m_numCapturedVariables; }
@@ -639,8 +646,8 @@ namespace JSC {
         }
 
     private:
-        FunctionExecutable(JSGlobalData&, const Identifier& name, const SourceCode&, bool forceUsesArguments, FunctionParameters*, bool);
-        FunctionExecutable(ExecState*, const Identifier& name, const SourceCode&, bool forceUsesArguments, FunctionParameters*, bool);
+        FunctionExecutable(JSGlobalData&, const Identifier& name, const Identifier& inferredName, const SourceCode&, bool forceUsesArguments, FunctionParameters*, bool);
+        FunctionExecutable(ExecState*, const Identifier& name, const Identifier& inferredName, const SourceCode&, bool forceUsesArguments, FunctionParameters*, bool);
 
         JSObject* compileForCallInternal(ExecState*, ScopeChainNode*, JITCode::JITType);
         JSObject* compileForConstructInternal(ExecState*, ScopeChainNode*, JITCode::JITType);
@@ -661,6 +668,7 @@ namespace JSC {
         OwnPtr<FunctionCodeBlock> m_codeBlockForCall;
         OwnPtr<FunctionCodeBlock> m_codeBlockForConstruct;
         Identifier m_name;
+        Identifier m_inferredName;
         WriteBarrier<JSString> m_nameValue;
         SharedSymbolTable* m_symbolTable;
     };
