@@ -1,3 +1,0 @@
-Content-Length: 92
-
-{"seq":16,"type":"request","command":"scripts","arguments":{"includeSource":true,"types":4}}
