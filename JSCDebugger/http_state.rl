@@ -25,7 +25,7 @@ public:
 
 extern "C" {
 
-int parseHeaders(char *buffer, int length, ParserDelegate *delegate);
+int parseHeaders(int file, ParserDelegate *delegate);
 
 %%{
 	machine http_simple;
@@ -75,7 +75,7 @@ int parseHeaders(char *buffer, int length, ParserDelegate *delegate);
 
 %% write data;
 
-int parseHeaders(char *buffer, int length, ParserDelegate *delegate)
+int parseHeaders(int file, ParserDelegate *delegate)
 {
 	// machine state
 	int cs, act, done = 0;
@@ -86,24 +86,41 @@ int parseHeaders(char *buffer, int length, ParserDelegate *delegate)
 
 	%% write init;
 
+	#define READ_CHUNK_SIZE 2
+	int bufferSize = READ_CHUNK_SIZE;
+	char *buffer = (char *)calloc(bufferSize + 1, 1);
+	char *p = buffer;
 	while (!done) {
-		char *p = buffer, *pe = (buffer + length);
+		ssize_t readBytes = read(file, p, READ_CHUNK_SIZE);
+		if (readBytes <= 0) {
+			printf("EOF!?\n");
+			return -1;
+		}
+		char *pe = (p + readBytes);
 
 		%% write exec;
 
 		if (cs == http_simple_error) {
-			printf("error state\n");
-			return -1;
+			printf("error parsing\n");
 		}
-		if (!done && p == pe) {
-			// EOF
-			printf("EOF??");
-			return -1;
+		if (!done) {
+			bufferSize *= 2;
+			char *newBuffer = (char *)realloc(buffer, bufferSize + 1);
+			if (!newBuffer) {
+				free(buffer);
+				printf("OUT OF MEMORY\n");
+				return 0;
+			}
+			if (newBuffer != buffer) {
+				myTs = newBuffer + (myTs - buffer);
+				p = newBuffer + (p - buffer);
+				buffer = newBuffer;
+			}
 		}
-
 	}
+	free(buffer);
 	// return how many bytes we actually parsed
-	return (te - buffer);
+	return (p - buffer);
 }
 
 #ifdef DEBUG_HTTP
@@ -123,11 +140,14 @@ class SomeDelegate : public ParserDelegate
 
 int main(int argc, char **argv) {
 	if (argc > 0) {
-		char *buff = (char *)malloc(2048);
+		char *buff = (char *)calloc(2048, 1);
 		SomeDelegate *delegate = new SomeDelegate();
 		int f = open(argv[1], O_RDONLY);
-		int readBytes = read(f, buff, 2048);
-		parseHeaders(buff, readBytes, delegate);
+		int parsedBytes = parseHeaders(f, delegate);
+		if (parsedBytes > 0) {
+			read(f, buff, 2048);
+			printf("body:\n%s", buff);
+		}
 		close(f);
 		free(buff);
 		delete delegate;

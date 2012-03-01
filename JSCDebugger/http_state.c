@@ -27,7 +27,7 @@ public:
 
 extern "C" {
 
-int parseHeaders(char *buffer, int length, ParserDelegate *delegate);
+int parseHeaders(int file, ParserDelegate *delegate);
 
 
 #line 74 "http_state.rl"
@@ -38,6 +38,47 @@ int parseHeaders(char *buffer, int length, ParserDelegate *delegate);
 static const char _http_simple_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6
+};
+
+static const char _http_simple_key_offsets[] = {
+	0, 0, 1, 8, 10, 13, 17, 18, 
+	21
+};
+
+static const char _http_simple_trans_keys[] = {
+	10, 32, 45, 58, 65, 90, 97, 122, 
+	32, 58, 32, 33, 126, 13, 32, 33, 
+	126, 10, 13, 32, 126, 13, 45, 65, 
+	90, 97, 122, 0
+};
+
+static const char _http_simple_single_lengths[] = {
+	0, 1, 3, 2, 1, 2, 1, 1, 
+	2
+};
+
+static const char _http_simple_range_lengths[] = {
+	0, 0, 2, 0, 1, 1, 0, 1, 
+	2
+};
+
+static const char _http_simple_index_offsets[] = {
+	0, 0, 2, 8, 11, 14, 18, 20, 
+	23
+};
+
+static const char _http_simple_trans_targs[] = {
+	8, 0, 3, 2, 4, 2, 2, 0, 
+	3, 4, 0, 5, 7, 0, 6, 5, 
+	7, 0, 8, 0, 6, 7, 0, 1, 
+	2, 2, 2, 0, 0
+};
+
+static const char _http_simple_trans_actions[] = {
+	13, 0, 1, 0, 1, 0, 0, 0, 
+	0, 0, 0, 5, 5, 0, 3, 5, 
+	5, 0, 11, 0, 3, 0, 0, 0, 
+	5, 5, 5, 0, 0
 };
 
 static const char _http_simple_to_state_actions[] = {
@@ -59,7 +100,7 @@ static const int http_simple_en_main = 8;
 
 #line 77 "http_state.rl"
 
-int parseHeaders(char *buffer, int length, ParserDelegate *delegate)
+int parseHeaders(int file, ParserDelegate *delegate)
 {
 	// machine state
 	int cs, act, done = 0;
@@ -69,7 +110,7 @@ int parseHeaders(char *buffer, int length, ParserDelegate *delegate)
 	char *myTs;
 
 	
-#line 73 "http_state.c"
+#line 114 "http_state.c"
 	{
 	cs = http_simple_start;
 	ts = 0;
@@ -79,14 +120,26 @@ int parseHeaders(char *buffer, int length, ParserDelegate *delegate)
 
 #line 88 "http_state.rl"
 
+	#define READ_CHUNK_SIZE 2
+	int bufferSize = READ_CHUNK_SIZE;
+	char *buffer = (char *)calloc(bufferSize + 1, 1);
+	char *p = buffer;
 	while (!done) {
-		char *p = buffer, *pe = (buffer + length);
+		ssize_t readBytes = read(file, p, READ_CHUNK_SIZE);
+		if (readBytes <= 0) {
+			printf("EOF!?\n");
+			return -1;
+		}
+		char *pe = (p + readBytes);
 
 		
-#line 87 "http_state.c"
+#line 137 "http_state.c"
 	{
+	int _klen;
+	unsigned int _trans;
 	const char *_acts;
 	unsigned int _nacts;
+	const char *_keys;
 
 	if ( p == pe )
 		goto _test_eof;
@@ -101,97 +154,70 @@ _resume:
 #line 1 "NONE"
 	{ts = p;}
 	break;
-#line 105 "http_state.c"
+#line 158 "http_state.c"
 		}
 	}
 
-	switch ( cs ) {
-case 8:
-	switch( (*p) ) {
-		case 13: goto tr12;
-		case 45: goto tr13;
-	}
-	if ( (*p) > 90 ) {
-		if ( 97 <= (*p) && (*p) <= 122 )
-			goto tr13;
-	} else if ( (*p) >= 65 )
-		goto tr13;
-	goto tr1;
-case 0:
-	goto _out;
-case 1:
-	if ( (*p) == 10 )
-		goto tr0;
-	goto tr1;
-case 2:
-	switch( (*p) ) {
-		case 32: goto tr2;
-		case 45: goto tr3;
-		case 58: goto tr4;
-	}
-	if ( (*p) > 90 ) {
-		if ( 97 <= (*p) && (*p) <= 122 )
-			goto tr3;
-	} else if ( (*p) >= 65 )
-		goto tr3;
-	goto tr1;
-case 3:
-	switch( (*p) ) {
-		case 32: goto tr5;
-		case 58: goto tr6;
-	}
-	goto tr1;
-case 4:
-	if ( (*p) == 32 )
-		goto tr7;
-	if ( 33 <= (*p) && (*p) <= 126 )
-		goto tr8;
-	goto tr1;
-case 5:
-	switch( (*p) ) {
-		case 13: goto tr9;
-		case 32: goto tr7;
-	}
-	if ( 33 <= (*p) && (*p) <= 126 )
-		goto tr8;
-	goto tr1;
-case 6:
-	if ( (*p) == 10 )
-		goto tr10;
-	goto tr1;
-case 7:
-	if ( (*p) == 13 )
-		goto tr9;
-	if ( 32 <= (*p) && (*p) <= 126 )
-		goto tr11;
-	goto tr1;
+	_keys = _http_simple_trans_keys + _http_simple_key_offsets[cs];
+	_trans = _http_simple_index_offsets[cs];
+
+	_klen = _http_simple_single_lengths[cs];
+	if ( _klen > 0 ) {
+		const char *_lower = _keys;
+		const char *_mid;
+		const char *_upper = _keys + _klen - 1;
+		while (1) {
+			if ( _upper < _lower )
+				break;
+
+			_mid = _lower + ((_upper-_lower) >> 1);
+			if ( (*p) < *_mid )
+				_upper = _mid - 1;
+			else if ( (*p) > *_mid )
+				_lower = _mid + 1;
+			else {
+				_trans += (unsigned int)(_mid - _keys);
+				goto _match;
+			}
+		}
+		_keys += _klen;
+		_trans += _klen;
 	}
 
-	tr1: cs = 0; goto _again;
-	tr12: cs = 1; goto _again;
-	tr3: cs = 2; goto _again;
-	tr13: cs = 2; goto f2;
-	tr5: cs = 3; goto _again;
-	tr2: cs = 3; goto f1;
-	tr6: cs = 4; goto _again;
-	tr4: cs = 4; goto f1;
-	tr7: cs = 5; goto f2;
-	tr9: cs = 6; goto f3;
-	tr11: cs = 7; goto _again;
-	tr8: cs = 7; goto f2;
-	tr0: cs = 8; goto f0;
-	tr10: cs = 8; goto f4;
+	_klen = _http_simple_range_lengths[cs];
+	if ( _klen > 0 ) {
+		const char *_lower = _keys;
+		const char *_mid;
+		const char *_upper = _keys + (_klen<<1) - 2;
+		while (1) {
+			if ( _upper < _lower )
+				break;
 
-	f1: _acts = _http_simple_actions + 1; goto execFuncs;
-	f3: _acts = _http_simple_actions + 3; goto execFuncs;
-	f2: _acts = _http_simple_actions + 5; goto execFuncs;
-	f4: _acts = _http_simple_actions + 11; goto execFuncs;
-	f0: _acts = _http_simple_actions + 13; goto execFuncs;
+			_mid = _lower + (((_upper-_lower) >> 1) & ~1);
+			if ( (*p) < _mid[0] )
+				_upper = _mid - 2;
+			else if ( (*p) > _mid[1] )
+				_lower = _mid + 2;
+			else {
+				_trans += (unsigned int)((_mid - _keys)>>1);
+				goto _match;
+			}
+		}
+		_trans += _klen;
+	}
 
-execFuncs:
-	_nacts = *_acts++;
-	while ( _nacts-- > 0 ) {
-		switch ( *_acts++ ) {
+_match:
+	cs = _http_simple_trans_targs[_trans];
+
+	if ( _http_simple_trans_actions[_trans] == 0 )
+		goto _again;
+
+	_acts = _http_simple_actions + _http_simple_trans_actions[_trans];
+	_nacts = (unsigned int) *_acts++;
+	while ( _nacts-- > 0 )
+	{
+		switch ( *_acts++ )
+		{
 	case 0:
 #line 33 "http_state.rl"
 	{
@@ -232,10 +258,9 @@ execFuncs:
 			{p++; goto _out; }
 		}}
 	break;
-#line 236 "http_state.c"
+#line 262 "http_state.c"
 		}
 	}
-	goto _again;
 
 _again:
 	_acts = _http_simple_actions + _http_simple_to_state_actions[cs];
@@ -246,7 +271,7 @@ _again:
 #line 1 "NONE"
 	{ts = 0;}
 	break;
-#line 250 "http_state.c"
+#line 275 "http_state.c"
 		}
 	}
 
@@ -258,21 +283,29 @@ _again:
 	_out: {}
 	}
 
-#line 93 "http_state.rl"
+#line 102 "http_state.rl"
 
 		if (cs == http_simple_error) {
-			printf("error state\n");
-			return -1;
+			printf("error parsing\n");
 		}
-		if (!done && p == pe) {
-			// EOF
-			printf("EOF??");
-			return -1;
+		if (!done) {
+			bufferSize *= 2;
+			char *newBuffer = (char *)realloc(buffer, bufferSize + 1);
+			if (!newBuffer) {
+				free(buffer);
+				printf("OUT OF MEMORY\n");
+				return 0;
+			}
+			if (newBuffer != buffer) {
+				myTs = newBuffer + (myTs - buffer);
+				p = newBuffer + (p - buffer);
+				buffer = newBuffer;
+			}
 		}
-
 	}
+	free(buffer);
 	// return how many bytes we actually parsed
-	return (te - buffer);
+	return (p - buffer);
 }
 
 #ifdef DEBUG_HTTP
@@ -292,11 +325,14 @@ class SomeDelegate : public ParserDelegate
 
 int main(int argc, char **argv) {
 	if (argc > 0) {
-		char *buff = (char *)malloc(2048);
+		char *buff = (char *)calloc(2048, 1);
 		SomeDelegate *delegate = new SomeDelegate();
 		int f = open(argv[1], O_RDONLY);
-		int readBytes = read(f, buff, 2048);
-		parseHeaders(buff, readBytes, delegate);
+		int parsedBytes = parseHeaders(f, delegate);
+		if (parsedBytes > 0) {
+			read(f, buff, 2048);
+			printf("body:\n%s", buff);
+		}
 		close(f);
 		free(buff);
 		delete delegate;
