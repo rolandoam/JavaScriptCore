@@ -7,7 +7,10 @@
 //
 
 #include "config.h"
+#include <runtime/JSONObject.h>
+#include <runtime/LiteralParser.h>
 #include "SimpleTCPServer.h"
+#include <string>
 
 // auto-generated file with ragel
 #include "http_state.c"
@@ -18,20 +21,25 @@ SimpleTCPServer::SimpleTCPServer(int port)
 {
 	struct hostent *hp;
 	struct sockaddr_in sa;
-	
+
 	printf("starting tcp server on port %d\n", port);
-		
+
 	memset(&sa, 0, sizeof(struct sockaddr_in));
 	// listen all
 	hp = gethostbyname("0.0.0.0");
 	ASSERT(hp);
-	
+
 	sa.sin_port = htons(port);
 	sa.sin_family = hp->h_addrtype;
-	
+
 	m_socket = socket(AF_INET, SOCK_STREAM, 0);
 	ASSERT(m_socket > 0);
-	
+
+	int on = 1;
+	int res = setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+	(void)res;
+	ASSERT(res == 0);
+
 	if (bind(m_socket, (const struct sockaddr *)&sa, sizeof(struct sockaddr_in)) < 0) {
 		close(m_socket);
 		ASSERT(0);
@@ -45,6 +53,10 @@ SimpleTCPServer::~SimpleTCPServer()
 
 void SimpleTCPServer::gotHeader(const char *name, const char *value)
 {
+	std::string key(name);
+	if (key.compare("Content-Length") == 0) {
+		m_currentDataLength = atoi(value);
+	}
 	printf("got key: '%s' ~> '%s'\n", name, value);
 }
 
@@ -57,21 +69,17 @@ void SimpleTCPServer::start()
 {
 	listen(m_socket, 1);
 	int t;
-	if ((t = accept(m_socket, NULL, NULL)) > 0) {
+	while ((t = accept(m_socket, NULL, NULL)) > 0) {
 		// we got something, process...
-		char buff[128];
-		memset(buff, 0, 128);
-		int bytesRead = 0;
-		char *bodyPointer = (char *)buff;
-		while ((bytesRead = read(t, buff, 128)) > 0) {
-			int parsedBytes = parseHeaders(buff, bytesRead, this);
-			if (parsedBytes > 0) {
-				bodyPointer += parsedBytes;
-				printf("body: '%s'\n", bodyPointer);
-			} else {
-				printf("got an error...\n");
-				printf("%s\n", buff);
+		int parsed = parseHeaders(t, this);
+		if (parsed && m_currentDataLength) {
+			// parsed headers and actually got a body length, now read that body
+			unsigned char *buff = (unsigned char *)calloc(m_currentDataLength + 1, 1);
+			int bytesRead = read(t, buff, m_currentDataLength);
+			while (bytesRead < m_currentDataLength) {
+				bytesRead = read(t, buff + bytesRead, m_currentDataLength - bytesRead);
 			}
+			parseRequest(buff, m_currentDataLength);
 		}
 	}
 }
