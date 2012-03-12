@@ -13,10 +13,10 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
-class ParserDelegate
+class HTTPParserDelegate
 {
 public:
-	virtual ~ParserDelegate() {};
+	virtual ~HTTPParserDelegate() {};
 	virtual void gotHeader(const char *headerName, const char *headerValue) = 0;
 	virtual void finishedParsingHeaders() = 0;
 };
@@ -25,7 +25,7 @@ public:
 
 extern "C" {
 
-int parseHeaders(int file, ParserDelegate *delegate);
+int parseHeaders(int file, HTTPParserDelegate *delegate);
 
 %%{
 	machine http_simple;
@@ -75,7 +75,7 @@ int parseHeaders(int file, ParserDelegate *delegate);
 
 %% write data;
 
-int parseHeaders(int file, ParserDelegate *delegate)
+int parseHeaders(int file, HTTPParserDelegate *delegate)
 {
 	// machine state
 	int cs, act, done = 0;
@@ -86,7 +86,7 @@ int parseHeaders(int file, ParserDelegate *delegate)
 
 	%% write init;
 
-	#define READ_CHUNK_SIZE 2
+	#define READ_CHUNK_SIZE 128
 	int bufferSize = READ_CHUNK_SIZE;
 	char *buffer = (char *)calloc(bufferSize + 1, 1);
 	char *p = buffer;
@@ -125,7 +125,7 @@ int parseHeaders(int file, ParserDelegate *delegate)
 
 #ifdef DEBUG_HTTP
 
-class SomeDelegate : public ParserDelegate
+class SomeDelegate : public HTTPParserDelegate
 {
 	void gotHeader(const char *name, const char *value)
 	{

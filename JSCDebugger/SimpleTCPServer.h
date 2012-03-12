@@ -9,36 +9,25 @@
 #ifndef JavaScriptCore_SimpleTCPServer_h
 #define JavaScriptCore_SimpleTCPServer_h
 
+#include "JSCDebuggerPrivate.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 
-class ParserDelegate
-{
-public:
-	virtual ~ParserDelegate() {};
-	virtual void gotHeader(const char *headerName, const char *headerValue) = 0;
-	virtual void finishedParsingHeaders() = 0;
-};
-
 namespace JSCDebug {
-	class SimpleTCPServer : public ParserDelegate
+	class SimpleTCPServer
 	{
 	private:
 		int m_socket;
 		int m_currentDataLength;
-		
+
+		int parseLine(int socket);
+
 	public:
 		SimpleTCPServer(int port);
 		~SimpleTCPServer();
-		
-		void start();
-		void jsonSend();
-		void jsonReceive();
-		
-		// parser delegate
-		virtual void gotHeader(const char *name, const char *value);
-		virtual void finishedParsingHeaders();
+
+		void start(JSCDebug::JSCDebugger *delegate);
 	};
 }
 #endif

@@ -7,13 +7,11 @@
 //
 
 #include "config.h"
-#include <runtime/JSONObject.h>
-#include <runtime/LiteralParser.h>
-#include "SimpleTCPServer.h"
 #include <string>
+#include "SimpleTCPServer.h"
 
 // auto-generated file with ragel
-#include "http_state.c"
+#include "simple_debug.c"
 
 using namespace JSCDebug;
 
@@ -51,43 +49,13 @@ SimpleTCPServer::~SimpleTCPServer()
 	close(m_socket);
 }
 
-void SimpleTCPServer::gotHeader(const char *name, const char *value)
-{
-	std::string key(name);
-	if (key.compare("Content-Length") == 0) {
-		m_currentDataLength = atoi(value);
-	}
-	printf("got key: '%s' ~> '%s'\n", name, value);
-}
-
-void SimpleTCPServer::finishedParsingHeaders()
-{
-	printf("end of headers - body pending\n");
-}
-
-void SimpleTCPServer::start()
+void SimpleTCPServer::start(JSCDebug::JSCDebugger *debugger)
 {
 	listen(m_socket, 1);
 	int t;
 	while ((t = accept(m_socket, NULL, NULL)) > 0) {
 		// we got something, process...
-		int parsed = parseHeaders(t, this);
-		if (parsed && m_currentDataLength) {
-			// parsed headers and actually got a body length, now read that body
-			unsigned char *buff = (unsigned char *)calloc(m_currentDataLength + 1, 1);
-			int bytesRead = read(t, buff, m_currentDataLength);
-			while (bytesRead < m_currentDataLength) {
-				bytesRead = read(t, buff + bytesRead, m_currentDataLength - bytesRead);
-			}
-			parseRequest(buff, m_currentDataLength);
-		}
+		write(t, ">> ", 3);
+		parseInput(t, debugger);
 	}
-}
-
-void SimpleTCPServer::jsonSend()
-{
-}
-
-void SimpleTCPServer::jsonReceive()
-{
 }

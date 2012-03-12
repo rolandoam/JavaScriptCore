@@ -35,6 +35,14 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		00B2EF1A14F6AC6500D9C155 /* JavaScriptCallFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00B2EF1114F6AC6500D9C155 /* JavaScriptCallFrame.cpp */; };
+		00B2EF1B14F6AC6500D9C155 /* JavaScriptCallFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = 00B2EF1214F6AC6500D9C155 /* JavaScriptCallFrame.h */; };
+		00B2EF1C14F6AC6500D9C155 /* JSCDebugger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00B2EF1314F6AC6500D9C155 /* JSCDebugger.cpp */; };
+		00B2EF1D14F6AC6500D9C155 /* JSCDebugger.h in Headers */ = {isa = PBXBuildFile; fileRef = 00B2EF1414F6AC6500D9C155 /* JSCDebugger.h */; };
+		00B2EF1E14F6AC6500D9C155 /* JSCDebuggerPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 00B2EF1514F6AC6500D9C155 /* JSCDebuggerPrivate.h */; };
+		00B2EF1F14F6AC6500D9C155 /* ScriptBreakpoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 00B2EF1614F6AC6500D9C155 /* ScriptBreakpoint.h */; };
+		00B2EF2014F6AC6500D9C155 /* SimpleTCPServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00B2EF1714F6AC6500D9C155 /* SimpleTCPServer.cpp */; };
+		00B2EF2114F6AC6500D9C155 /* SimpleTCPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 00B2EF1814F6AC6500D9C155 /* SimpleTCPServer.h */; };
 		00D461C014EEEA2A0055080B /* AbstractMacroAssembler.h in Headers */ = {isa = PBXBuildFile; fileRef = 860161DF0F3A83C100F84710 /* AbstractMacroAssembler.h */; };
 		00D461C114EEEA2A0055080B /* Alignment.h in Headers */ = {isa = PBXBuildFile; fileRef = A1D764511354448B00C5C7C0 /* Alignment.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		00D461C214EEEA2A0055080B /* AlwaysInline.h in Headers */ = {isa = PBXBuildFile; fileRef = 93AA4F770957251F0084B3A7 /* AlwaysInline.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -1567,6 +1575,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		00B2EF1114F6AC6500D9C155 /* JavaScriptCallFrame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JavaScriptCallFrame.cpp; sourceTree = "<group>"; };
+		00B2EF1214F6AC6500D9C155 /* JavaScriptCallFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaScriptCallFrame.h; sourceTree = "<group>"; };
+		00B2EF1314F6AC6500D9C155 /* JSCDebugger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSCDebugger.cpp; sourceTree = "<group>"; };
+		00B2EF1414F6AC6500D9C155 /* JSCDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSCDebugger.h; sourceTree = "<group>"; };
+		00B2EF1514F6AC6500D9C155 /* JSCDebuggerPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSCDebuggerPrivate.h; sourceTree = "<group>"; };
+		00B2EF1614F6AC6500D9C155 /* ScriptBreakpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptBreakpoint.h; sourceTree = "<group>"; };
+		00B2EF1714F6AC6500D9C155 /* SimpleTCPServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleTCPServer.cpp; sourceTree = "<group>"; };
+		00B2EF1814F6AC6500D9C155 /* SimpleTCPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleTCPServer.h; sourceTree = "<group>"; };
 		00D4649914EEEA2A0055080B /* libJavaScriptCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libJavaScriptCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		00D464A414EEEB460055080B /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = DEVELOPER_DIR; };
 		00D464A614EEEB4F0055080B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -2418,6 +2434,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		00B2EF0E14F6AC6500D9C155 /* JSCDebugger */ = {
+			isa = PBXGroup;
+			children = (
+				00B2EF1114F6AC6500D9C155 /* JavaScriptCallFrame.cpp */,
+				00B2EF1214F6AC6500D9C155 /* JavaScriptCallFrame.h */,
+				00B2EF1314F6AC6500D9C155 /* JSCDebugger.cpp */,
+				00B2EF1414F6AC6500D9C155 /* JSCDebugger.h */,
+				00B2EF1514F6AC6500D9C155 /* JSCDebuggerPrivate.h */,
+				00B2EF1614F6AC6500D9C155 /* ScriptBreakpoint.h */,
+				00B2EF1714F6AC6500D9C155 /* SimpleTCPServer.cpp */,
+				00B2EF1814F6AC6500D9C155 /* SimpleTCPServer.h */,
+			);
+			path = JSCDebugger;
+			sourceTree = "<group>";
+		};
 		00D464AC14EEEC200055080B /* iOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -2463,6 +2494,7 @@
 				F5C290E60284F98E018635CA /* JavaScriptCorePrefix.h */,
 				45E12D8806A49B0F00E9DF84 /* jsc.cpp */,
 				F68EBB8C0255D4C601FF60F7 /* config.h */,
+				00B2EF0E14F6AC6500D9C155 /* JSCDebugger */,
 				1432EBD70A34CAD400717B9F /* API */,
 				9688CB120ED12B4E001D649F /* assembler */,
 				969A078F0ED1D3AE00F1F681 /* bytecode */,
@@ -3965,6 +3997,11 @@
 				00D4639414EEEA2A0055080B /* PutKind.h in Headers */,
 				00D4639514EEEA2A0055080B /* GCAssertions.h in Headers */,
 				00D4639614EEEA2A0055080B /* PassWeak.h in Headers */,
+				00B2EF1B14F6AC6500D9C155 /* JavaScriptCallFrame.h in Headers */,
+				00B2EF1D14F6AC6500D9C155 /* JSCDebugger.h in Headers */,
+				00B2EF1E14F6AC6500D9C155 /* JSCDebuggerPrivate.h in Headers */,
+				00B2EF1F14F6AC6500D9C155 /* ScriptBreakpoint.h in Headers */,
+				00B2EF2114F6AC6500D9C155 /* SimpleTCPServer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5094,6 +5131,9 @@
 				00D4648814EEEA2A0055080B /* MarkedAllocator.cpp in Sources */,
 				00D4648914EEEA2A0055080B /* DataLog.cpp in Sources */,
 				00D4648A14EEEA2A0055080B /* PolymorphicPutByIdList.cpp in Sources */,
+				00B2EF1A14F6AC6500D9C155 /* JavaScriptCallFrame.cpp in Sources */,
+				00B2EF1C14F6AC6500D9C155 /* JSCDebugger.cpp in Sources */,
+				00B2EF2014F6AC6500D9C155 /* SimpleTCPServer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
