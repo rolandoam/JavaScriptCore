@@ -56,7 +56,8 @@ namespace JSCDebug {
 		bool hasBreakpoint(intptr_t sourceID, const TextPosition&) const;
 	public:
 		JSCDebugger();
-		
+
+		bool isPaused() { return m_paused; };
 		void setDelegate(JSCDebuggerDelegate *delegate) { m_delegate = delegate; };
 		void setShouldPause(bool shouldPause) { m_pauseOnNextStatement = shouldPause; };
 		String setBreakpoint(const String& sourceID, const ScriptBreakpoint& scriptBreakpoint, int* actualLineNumber, int* actualColumnNumber);

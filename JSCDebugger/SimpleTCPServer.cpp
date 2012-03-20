@@ -53,9 +53,12 @@ void SimpleTCPServer::start(JSCDebug::JSCDebugger *debugger)
 {
 	listen(m_socket, 1);
 	int t;
-	while ((t = accept(m_socket, NULL, NULL)) > 0) {
+	bool keepListening = true;
+	while (keepListening && (t = accept(m_socket, NULL, NULL)) > 0) {
 		// we got something, process...
 		write(t, ">> ", 3);
-		parseInput(t, debugger);
+		if (parseInput(t, debugger) == 0)
+			keepListening = false;
+		close(t);
 	}
 }

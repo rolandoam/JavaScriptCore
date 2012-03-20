@@ -46,87 +46,91 @@ enum {
 
 void performAction(int command, char **args, JSCDebug::JSCDebugger *debugger, int socket);
 int parseInput(int file, JSCDebug::JSCDebugger *debugger);
+static bool shouldExit = false;
 
 
-#line 78 "simple_debug.rl"
+#line 80 "simple_debug.rl"
 
 
 
-#line 56 "simple_debug.c"
+#line 57 "simple_debug.c"
 static const char _simple_debug_actions[] = {
 	0, 1, 0, 1, 2, 1, 3, 1, 
-	4, 1, 5, 2, 1, 6
+	4, 1, 5, 1, 7, 2, 1, 6
+	
 };
 
 static const char _simple_debug_key_offsets[] = {
-	0, 0, 2, 3, 4, 5, 6, 7, 
-	8, 9, 11, 12, 13, 14, 15, 16, 
-	17, 19, 20, 21
+	0, 0, 2, 4, 5, 6, 8, 9, 
+	10, 11, 12, 14, 15, 16, 17, 18, 
+	19, 20, 22, 23, 24
 };
 
 static const char _simple_debug_trans_keys[] = {
-	10, 111, 110, 116, 105, 110, 117, 101, 
-	10, 32, 118, 10, 10, 97, 108, 32, 
-	10, 10, 116, 101, 112, 99, 101, 110, 
-	115, 0
+	10, 32, 10, 111, 110, 116, 10, 105, 
+	110, 117, 101, 10, 32, 118, 10, 10, 
+	97, 108, 32, 10, 10, 116, 101, 112, 
+	10, 32, 99, 101, 110, 115, 0
 };
 
 static const char _simple_debug_single_lengths[] = {
-	0, 2, 1, 1, 1, 1, 1, 1, 
-	1, 2, 1, 1, 1, 1, 1, 1, 
-	2, 1, 1, 4
+	0, 2, 2, 1, 1, 2, 1, 1, 
+	1, 1, 2, 1, 1, 1, 1, 1, 
+	1, 2, 1, 1, 6
 };
 
 static const char _simple_debug_range_lengths[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0
+	0, 0, 0, 0, 0
 };
 
 static const char _simple_debug_index_offsets[] = {
-	0, 0, 3, 5, 7, 9, 11, 13, 
-	15, 17, 20, 22, 24, 26, 28, 30, 
-	32, 35, 37, 39
+	0, 0, 3, 6, 8, 10, 13, 15, 
+	17, 19, 21, 24, 26, 28, 30, 32, 
+	34, 36, 39, 41, 43
 };
 
 static const char _simple_debug_trans_targs[] = {
-	19, 2, 0, 3, 0, 4, 0, 5, 
-	0, 6, 0, 7, 0, 8, 0, 19, 
-	0, 10, 12, 0, 0, 11, 19, 11, 
-	13, 0, 14, 0, 10, 0, 19, 0, 
-	19, 17, 0, 18, 0, 15, 0, 1, 
-	9, 15, 16, 0, 0
+	20, 1, 0, 20, 3, 0, 4, 0, 
+	5, 0, 20, 6, 0, 7, 0, 8, 
+	0, 9, 0, 20, 0, 11, 13, 0, 
+	0, 12, 20, 12, 14, 0, 15, 0, 
+	11, 0, 20, 0, 20, 18, 0, 19, 
+	0, 16, 0, 20, 1, 2, 10, 16, 
+	17, 0, 0
 };
 
 static const char _simple_debug_trans_actions[] = {
-	9, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 9, 
-	0, 0, 0, 0, 0, 1, 11, 0, 
-	0, 0, 0, 0, 0, 0, 7, 0, 
-	7, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0
+	11, 0, 0, 9, 0, 0, 0, 0, 
+	0, 0, 9, 0, 0, 0, 0, 0, 
+	0, 0, 0, 9, 0, 0, 0, 0, 
+	0, 1, 13, 0, 0, 0, 0, 0, 
+	0, 0, 7, 0, 7, 0, 0, 0, 
+	0, 0, 0, 11, 0, 0, 0, 0, 
+	0, 0, 0
 };
 
 static const char _simple_debug_to_state_actions[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 3
+	0, 0, 0, 0, 3
 };
 
 static const char _simple_debug_from_state_actions[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 5
+	0, 0, 0, 0, 5
 };
 
-static const int simple_debug_start = 19;
-static const int simple_debug_first_final = 19;
+static const int simple_debug_start = 20;
+static const int simple_debug_first_final = 20;
 static const int simple_debug_error = 0;
 
-static const int simple_debug_en_main = 19;
+static const int simple_debug_en_main = 20;
 
 
-#line 81 "simple_debug.rl"
+#line 83 "simple_debug.rl"
 
 void performAction(int command, char **args, JSCDebug::JSCDebugger *debugger, int socket)
 {
@@ -141,12 +145,14 @@ void performAction(int command, char **args, JSCDebug::JSCDebugger *debugger, in
 		break;
 	case kContinueCommand:
 		debugger->continueProgram();
+		shouldExit = true;
 		break;
 	case kEvalCommand:
 		printf("eval: '%s'\n", *args);
 		unsigned outLen;
 		const unsigned char *result = debugger->evaluateInCurrentFrame((unsigned char *)*args, &outLen);
 		write(socket, result, outLen);
+		write(socket, "\n>> ", 4);
 		free(*args); *args = NULL;
 		break;
 	}
@@ -164,7 +170,7 @@ int parseInput(int file, JSCDebug::JSCDebugger *debugger)
 	char *args = NULL, *argsBegin = NULL;
 
 	
-#line 168 "simple_debug.c"
+#line 174 "simple_debug.c"
 	{
 	cs = simple_debug_start;
 	ts = 0;
@@ -172,14 +178,14 @@ int parseInput(int file, JSCDebug::JSCDebugger *debugger)
 	act = 0;
 	}
 
-#line 118 "simple_debug.rl"
+#line 122 "simple_debug.rl"
 	ssize_t readBytes;
-	while ((readBytes = read(file, buff, BUF_SIZE))) {
+	while (!shouldExit && (readBytes = read(file, buff, BUF_SIZE))) {
 		char *p = buff, *eof = buff + readBytes;
 		char *pe = eof;
 
 		
-#line 183 "simple_debug.c"
+#line 189 "simple_debug.c"
 	{
 	int _klen;
 	unsigned int _trans;
@@ -200,7 +206,7 @@ _resume:
 #line 1 "NONE"
 	{ts = p;}
 	break;
-#line 204 "simple_debug.c"
+#line 210 "simple_debug.c"
 		}
 	}
 
@@ -265,13 +271,13 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-#line 61 "simple_debug.rl"
+#line 62 "simple_debug.rl"
 	{
 		argsBegin = p;
 	}
 	break;
 	case 1:
-#line 64 "simple_debug.rl"
+#line 65 "simple_debug.rl"
 	{
 		if (args) {
 			free(args);
@@ -282,18 +288,22 @@ _match:
 	}
 	break;
 	case 4:
-#line 74 "simple_debug.rl"
+#line 75 "simple_debug.rl"
 	{te = p+1;{ performAction(kNextCommand, NULL, debugger, file); }}
 	break;
 	case 5:
-#line 75 "simple_debug.rl"
-	{te = p+1;{ performAction(kContinueCommand, NULL, debugger, file); }}
+#line 76 "simple_debug.rl"
+	{te = p+1;{ performAction(kContinueCommand, NULL, debugger, file); {p++; goto _out; } }}
 	break;
 	case 6:
-#line 76 "simple_debug.rl"
+#line 77 "simple_debug.rl"
 	{te = p+1;{ performAction(kEvalCommand, &args, debugger, file); }}
 	break;
-#line 297 "simple_debug.c"
+	case 7:
+#line 78 "simple_debug.rl"
+	{te = p+1;}
+	break;
+#line 307 "simple_debug.c"
 		}
 	}
 
@@ -306,7 +316,7 @@ _again:
 #line 1 "NONE"
 	{ts = 0;}
 	break;
-#line 310 "simple_debug.c"
+#line 320 "simple_debug.c"
 		}
 	}
 
@@ -318,10 +328,10 @@ _again:
 	_out: {}
 	}
 
-#line 124 "simple_debug.rl"
+#line 128 "simple_debug.rl"
 
 		if (cs == simple_debug_error) {
-			printf("parser error @ '%s'", p);
+			printf("parser error @ '%s'\n", p);
 			return -1;
 		}
 	}

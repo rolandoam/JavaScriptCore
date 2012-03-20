@@ -44,13 +44,14 @@ enum {
 
 void performAction(int command, char **args, JSCDebug::JSCDebugger *debugger, int socket);
 int parseInput(int file, JSCDebug::JSCDebugger *debugger);
+static bool shouldExit = false;
 
 %%{
 	machine simple_debug;
 
 	# commands
 	step       = ('s' | 'step' | 'n');
-	cont       = ('c' | 'continue');
+	cont       = ('c' | 'continue' | 'cont');
 	breakpoint = ('b' | 'breakpoint');
 	step_into  = ('si');
 	backtrace  = ('bt' | 'backtrace');
@@ -72,8 +73,9 @@ int parseInput(int file, JSCDebug::JSCDebugger *debugger);
 
 	main := |*
 		step newline => { performAction(kNextCommand, NULL, debugger, file); };
-		cont newline => { performAction(kContinueCommand, NULL, debugger, file); };
+		cont newline => { performAction(kContinueCommand, NULL, debugger, file); fbreak; };
 		eval ' ' (any - newline)+ > markArgsBegin % markArgsEnd newline => { performAction(kEvalCommand, &args, debugger, file); };
+		[ ]* newline;
 	*|;
 }%%
 
@@ -92,12 +94,14 @@ void performAction(int command, char **args, JSCDebug::JSCDebugger *debugger, in
 		break;
 	case kContinueCommand:
 		debugger->continueProgram();
+		shouldExit = true;
 		break;
 	case kEvalCommand:
 		printf("eval: '%s'\n", *args);
 		unsigned outLen;
 		const unsigned char *result = debugger->evaluateInCurrentFrame((unsigned char *)*args, &outLen);
 		write(socket, result, outLen);
+		write(socket, "\n>> ", 4);
 		free(*args); *args = NULL;
 		break;
 	}
@@ -116,14 +120,14 @@ int parseInput(int file, JSCDebug::JSCDebugger *debugger)
 
 	%% write init;
 	ssize_t readBytes;
-	while ((readBytes = read(file, buff, BUF_SIZE))) {
+	while (!shouldExit && (readBytes = read(file, buff, BUF_SIZE))) {
 		char *p = buff, *eof = buff + readBytes;
 		char *pe = eof;
 
 		%% write exec;
 
 		if (cs == simple_debug_error) {
-			printf("parser error @ '%s'", p);
+			printf("parser error @ '%s'\n", p);
 			return -1;
 		}
 	}

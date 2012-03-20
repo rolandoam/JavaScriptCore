@@ -35,6 +35,10 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		0049EFF61519313900E9DE34 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0049EFF51519313900E9DE34 /* libicucore.dylib */; };
+		0049EFF81519313F00E9DE34 /* libobjc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0049EFF71519313F00E9DE34 /* libobjc.dylib */; };
+		0049EFFA1519314500E9DE34 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0049EFF91519314500E9DE34 /* CoreFoundation.framework */; };
+		0049EFFC1519314A00E9DE34 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0049EFFB1519314A00E9DE34 /* Foundation.framework */; };
 		00B2EF1A14F6AC6500D9C155 /* JavaScriptCallFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00B2EF1114F6AC6500D9C155 /* JavaScriptCallFrame.cpp */; };
 		00B2EF1B14F6AC6500D9C155 /* JavaScriptCallFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = 00B2EF1214F6AC6500D9C155 /* JavaScriptCallFrame.h */; };
 		00B2EF1C14F6AC6500D9C155 /* JSCDebugger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00B2EF1314F6AC6500D9C155 /* JSCDebugger.cpp */; };
@@ -757,10 +761,6 @@
 		00D4648814EEEA2A0055080B /* MarkedAllocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C2B916C414DA040C00CBAC86 /* MarkedAllocator.cpp */; };
 		00D4648914EEEA2A0055080B /* DataLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F9FC8CD14E612D500D52AE0 /* DataLog.cpp */; };
 		00D4648A14EEEA2A0055080B /* PolymorphicPutByIdList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F9FC8BF14E1B5FB00D52AE0 /* PolymorphicPutByIdList.cpp */; };
-		00D464A514EEEB460055080B /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D464A414EEEB460055080B /* CoreFoundation.framework */; };
-		00D464A714EEEB4F0055080B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D464A614EEEB4F0055080B /* Foundation.framework */; };
-		00D464A914EEEBF60055080B /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D464A814EEEBF60055080B /* libicucore.dylib */; };
-		00D464AB14EEEC020055080B /* libobjc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D464AA14EEEC020055080B /* libobjc.dylib */; };
 		06D358B30DAADAA4003B174E /* MainThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06D358A20DAAD9C4003B174E /* MainThread.cpp */; };
 		06D358B40DAADAAA003B174E /* MainThreadMac.mm in Sources */ = {isa = PBXBuildFile; fileRef = 06D358A10DAAD9C4003B174E /* MainThreadMac.mm */; };
 		081469491264378500DFF935 /* StringBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 081469481264375E00DFF935 /* StringBuilder.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -1575,6 +1575,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0049EFF51519313900E9DE34 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/usr/lib/libicucore.dylib; sourceTree = DEVELOPER_DIR; };
+		0049EFF71519313F00E9DE34 /* libobjc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libobjc.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/usr/lib/libobjc.dylib; sourceTree = DEVELOPER_DIR; };
+		0049EFF91519314500E9DE34 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = DEVELOPER_DIR; };
+		0049EFFB1519314A00E9DE34 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		00B2EF1114F6AC6500D9C155 /* JavaScriptCallFrame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JavaScriptCallFrame.cpp; sourceTree = "<group>"; };
 		00B2EF1214F6AC6500D9C155 /* JavaScriptCallFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaScriptCallFrame.h; sourceTree = "<group>"; };
 		00B2EF1314F6AC6500D9C155 /* JSCDebugger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSCDebugger.cpp; sourceTree = "<group>"; };
@@ -1584,10 +1588,6 @@
 		00B2EF1714F6AC6500D9C155 /* SimpleTCPServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleTCPServer.cpp; sourceTree = "<group>"; };
 		00B2EF1814F6AC6500D9C155 /* SimpleTCPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleTCPServer.h; sourceTree = "<group>"; };
 		00D4649914EEEA2A0055080B /* libJavaScriptCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libJavaScriptCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		00D464A414EEEB460055080B /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = DEVELOPER_DIR; };
-		00D464A614EEEB4F0055080B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		00D464A814EEEBF60055080B /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/usr/lib/libicucore.dylib; sourceTree = DEVELOPER_DIR; };
-		00D464AA14EEEC020055080B /* libobjc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libobjc.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/usr/lib/libobjc.dylib; sourceTree = DEVELOPER_DIR; };
 		06D358A10DAAD9C4003B174E /* MainThreadMac.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainThreadMac.mm; sourceTree = "<group>"; };
 		06D358A20DAAD9C4003B174E /* MainThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MainThread.cpp; sourceTree = "<group>"; };
 		06D358A30DAAD9C4003B174E /* MainThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainThread.h; sourceTree = "<group>"; };
@@ -2377,10 +2377,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00D464A514EEEB460055080B /* CoreFoundation.framework in Frameworks */,
-				00D464A714EEEB4F0055080B /* Foundation.framework in Frameworks */,
-				00D464A914EEEBF60055080B /* libicucore.dylib in Frameworks */,
-				00D464AB14EEEC020055080B /* libobjc.dylib in Frameworks */,
+				0049EFFC1519314A00E9DE34 /* Foundation.framework in Frameworks */,
+				0049EFFA1519314500E9DE34 /* CoreFoundation.framework in Frameworks */,
+				0049EFF81519313F00E9DE34 /* libobjc.dylib in Frameworks */,
+				0049EFF61519313900E9DE34 /* libicucore.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2452,10 +2452,10 @@
 		00D464AC14EEEC200055080B /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				00D464AA14EEEC020055080B /* libobjc.dylib */,
-				00D464A814EEEBF60055080B /* libicucore.dylib */,
-				00D464A614EEEB4F0055080B /* Foundation.framework */,
-				00D464A414EEEB460055080B /* CoreFoundation.framework */,
+				0049EFFB1519314A00E9DE34 /* Foundation.framework */,
+				0049EFF91519314500E9DE34 /* CoreFoundation.framework */,
+				0049EFF71519313F00E9DE34 /* libobjc.dylib */,
+				0049EFF51519313900E9DE34 /* libicucore.dylib */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
